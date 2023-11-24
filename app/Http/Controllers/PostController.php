@@ -60,17 +60,33 @@ class PostController extends Controller
         return redirect()->route('post.index');
     }
 
-    function edit(Post $post){
+    function edit(Post $post)
+    {
         return view('posts.create', compact('post'));
     }
-    function update(Request $request, Post $post)   [
+    function update(Request $request, Post $post)
+    {
         $request->validate([
-            'title'->'required'|min':10',
-            'content'=> 'required'
-        ]),[
-            'title.required'=>'Sila isi ruangan tajuk',
-            'title.min'=>'Tajuk mestilah sekurang-2nya 10 aksara','content.required'=>'Sila isi ruangan Kandungan'
+            'title' => 'required|min:10',
+            'content' => 'required'
+        ], [
+            'title.required' => 'Sila Isi Ruangan Tajuk',
+            'title.min' => 'Tajuk mestilah 10 aksara',
+
+
+            'content.required' => 'Sila Isi Ruangan Kandungan'
         ]);
-    ]
+
+
+
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->user_id = Auth::user()->id;
+        $post->save();
+
+        flash('Post Anda Telah DiSIMPAN')->success()->important();
+
+        return redirect()->route('post.index');
+    }
 }
 
